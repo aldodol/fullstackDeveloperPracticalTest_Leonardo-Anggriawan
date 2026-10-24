@@ -1,0 +1,179 @@
+{
+  "info": {
+    "name": "Sistem Transaksi Bahan Baku API (Studi Kasus 4)",
+    "description": "Postman Collection untuk pengujian REST API Transaksi Bahan Baku: Master Bahan Baku, Transaksi Barang Keluar, Transaksi Pengembalian, dan Kartu Stok.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Health & Overview",
+      "item": [
+        {
+          "name": "Healthcheck",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:5000/health",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["health"]
+            }
+          }
+        },
+        {
+          "name": "Ringkasan Stok (Overview & KPI)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/stock/overview",
+              "host": ["{{baseUrl}}"],
+              "path": ["stock", "overview"]
+            }
+          }
+        },
+        {
+          "name": "Riwayat Pergerakan Stok (Audit Trail)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/stock/movements?limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["stock", "movements"],
+              "query": [
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Master Bahan Baku",
+      "item": [
+        {
+          "name": "Daftar Bahan Baku",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/materials",
+              "host": ["{{baseUrl}}"],
+              "path": ["materials"]
+            }
+          }
+        },
+        {
+          "name": "Tambah Bahan Baku Baru",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"RM-MET-088\",\n  \"name\": \"Plat Kuningan 0.8mm\",\n  \"category_id\": 1,\n  \"unit\": \"lembar\",\n  \"min_stock\": 10,\n  \"initial_stock\": 40,\n  \"description\": \"Kuningan impor presisi tinggi\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/materials",
+              "host": ["{{baseUrl}}"],
+              "path": ["materials"]
+            }
+          }
+        },
+        {
+          "name": "Penyesuaian Stok (Stock Opname)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"adjustment_type\": \"ADD\",\n  \"quantity\": 5,\n  \"reason\": \"Temuan audit fisik gudang\",\n  \"notes\": \"Koreksi stok rak B-02\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/materials/1/adjust-stock",
+              "host": ["{{baseUrl}}"],
+              "path": ["materials", "1", "adjust-stock"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Transaksi Barang Keluar",
+      "item": [
+        {
+          "name": "Daftar Barang Keluar",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/goods-out",
+              "host": ["{{baseUrl}}"],
+              "path": ["goods-out"]
+            }
+          }
+        },
+        {
+          "name": "Catat Barang Keluar",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"department\": \"Divisi Perakitan Elektronik\",\n  \"recipient_name\": \"Hendra Wijaya\",\n  \"notes\": \"Kebutuhan perakitan panel distribusi\",\n  \"items\": [\n    {\n      \"material_id\": 1,\n      \"quantity\": 5,\n      \"notes\": \"Cover plat\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/goods-out",
+              "host": ["{{baseUrl}}"],
+              "path": ["goods-out"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Transaksi Pengembalian Barang",
+      "item": [
+        {
+          "name": "Daftar Pengembalian",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/goods-returns",
+              "host": ["{{baseUrl}}"],
+              "path": ["goods-returns"]
+            }
+          }
+        },
+        {
+          "name": "Catat Pengembalian Barang",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"goods_out_id\": 1,\n  \"returner_name\": \"Budi Santoso\",\n  \"department\": \"Divisi Fabrikasi Logam\",\n  \"reason\": \"Sisa Pemakaian Produksi\",\n  \"notes\": \"Kondisi utuh dan baik\",\n  \"items\": [\n    {\n      \"material_id\": 1,\n      \"goods_out_item_id\": 1,\n      \"quantity\": 1,\n      \"condition_type\": \"GOOD\",\n      \"is_restocked\": true,\n      \"notes\": \"Sisa potongan\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/goods-returns",
+              "host": ["{{baseUrl}}"],
+              "path": ["goods-returns"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
