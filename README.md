@@ -147,7 +147,7 @@ Aplikasi dapat dijalankan melalui **Docker** (rekomendasi satu perintah) atau di
 
 Pastikan Docker Desktop sudah terpasang dan berjalan pada sistem Anda.
 
-1. Buka terminal pada folder proyek root (`c:\Users\Lenovo\Kerja\Fullstack Developer Practical Test`).
+1. Buka terminal pada folder proyek root.
 2. Jalankan perintah:
    ```bash
    docker compose up --build -d
